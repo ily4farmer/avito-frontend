@@ -16,9 +16,6 @@
     "format": "biome format --write .",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,jsonc,css}": "biome check --write"
-  },
   "devDependencies": {
     "@biomejs/biome": "2.6.4",
     "@commitlint/cli": "^21.2.4",

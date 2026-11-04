@@ -18,7 +18,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "a11y": "off",
       "correctness": {
         "useExhaustiveDependencies": "off"
@@ -27,7 +27,9 @@
         "noDescendingSpecificity": "off"
       },
       "complexity": {
-        "noImportantStyles": "off"
+        "noImportantStyles": "off",
+        "noThisInStatic": "off",
+        "noStaticOnlyClass": "off"
       },
       "suspicious": {
         "noArrayIndexKey": "off",

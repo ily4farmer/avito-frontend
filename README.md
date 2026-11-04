@@ -51,4 +51,3 @@ npm run check:types
 ```
 
 runs `tsc --noEmit` over the project.
-

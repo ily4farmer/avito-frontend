@@ -16,8 +16,13 @@
     "format": "biome format --write .",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc,css}": "biome check --write"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.6.4",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@swc/core": "^1.16.21",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
@@ -47,10 +52,5 @@
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.5",
     "zustand": "^5.0.16"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,jsonc,css}": [
-      "biome check --write"
-    ]
   }
 }

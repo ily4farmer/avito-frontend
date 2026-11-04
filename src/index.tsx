@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRoot } from 'react-dom/client';
 import { App } from './app/App';
 
@@ -8,10 +7,4 @@ if (!rootElement) {
   throw new Error('Не найден элемент #root');
 }
 
-const queryClient = new QueryClient();
-
-createRoot(rootElement).render(
-  <QueryClientProvider client={queryClient}>
-    <App />
-  </QueryClientProvider>,
-);
+createRoot(rootElement).render(<App />);

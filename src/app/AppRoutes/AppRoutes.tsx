@@ -1,19 +1,18 @@
 import { Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+
 import { AppAllRoutes } from './AppAllRoutes';
 
 export const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        {AppAllRoutes.map(el => (
-          <Route
-            key={el.path}
-            path={el.path}
-            element={<Suspense fallback={<div>Loading...</div>}>{el.components}</Suspense>}
-          />
-        ))}
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      {AppAllRoutes.map(route => (
+        <Route
+          key={route.path}
+          path={route.path}
+          element={<Suspense fallback={<div>Loading...</div>}>{route.components}</Suspense>}
+        />
+      ))}
+    </Routes>
   );
 };

@@ -1,7 +1,19 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
 
-const queryClient = new QueryClient();
+type Props = {
+  children: ReactNode;
+  queryClient?: QueryClient;
+};
 
-export const AppQueryClient = ({ children }: { children: React.ReactNode }) => {
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+export const createQueryClient = () => {
+  return new QueryClient();
+};
+
+const browserQueryClient = createQueryClient();
+
+export const AppQueryClient = ({ children, queryClient }: Props) => {
+  return (
+    <QueryClientProvider client={queryClient ?? browserQueryClient}>{children}</QueryClientProvider>
+  );
 };

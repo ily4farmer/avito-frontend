@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+
 import { RouteId, RouteUrl } from '../../constants/routes';
 import type { AppRoutesConfig } from '../../types';
 
@@ -32,5 +33,9 @@ export const AppAllRoutes: AppRoutesConfig = [
   {
     components: <NotFound />,
     path: RouteUrl[RouteId.notFound],
+  },
+  {
+    components: <NotFound />,
+    path: '*',
   },
 ];

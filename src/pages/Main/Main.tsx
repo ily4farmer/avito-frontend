@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { DemoPost } from '../../components/DemoPost/DemoPost';
 import { useMainStore } from '../../store';
 
 export const Main = () => {
@@ -11,6 +12,7 @@ export const Main = () => {
         <span>{count}</span>
         <button onClick={setCount}>add</button>
       </div>
+      <DemoPost />
       <Link to="/about">Back to About</Link>
     </div>
   );

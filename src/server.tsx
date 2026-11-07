@@ -1,14 +1,14 @@
 import { PassThrough } from 'node:stream';
+import { finished } from 'node:stream/promises';
 import type { DehydratedState } from '@tanstack/react-query';
 import { dehydrate } from '@tanstack/react-query';
 
 import { renderToPipeableStream } from 'react-dom/server';
-import { StaticRouter } from 'react-router-dom';
+import { matchRoutes, StaticRouter } from 'react-router-dom';
 
 import { App } from './app/App';
 import { createQueryClient } from './app/AppQueryClient/AppQueryClient';
-
-import { demoPostQueryOptions } from './services/demoPost';
+import { routeDefinitions } from './app/AppRoutes/routeDefinitions';
 
 type RenderResult = {
   markup: string;
@@ -19,68 +19,57 @@ export const renderPage = async (url: string): Promise<RenderResult> => {
   const queryClient = createQueryClient();
 
   try {
-    // Загружаем публикацию только для главной страницы.
-    if (url === '/') {
-      await queryClient.prefetchQuery(demoPostQueryOptions);
-    }
+    const matches = matchRoutes(routeDefinitions, url) ?? [];
 
-    // Получаем состояние кэша после загрузки данных.
+    await Promise.all(matches.map(({ route }) => route.preload?.(queryClient)));
+
     const dehydratedState = dehydrate(queryClient);
 
-    const markup = await new Promise<string>((resolve, reject) => {
-      const chunks: Buffer[] = [];
+    const chunks: Buffer[] = [];
+    const stream = new PassThrough();
+    stream.on('data', (chunk: Buffer) => chunks.push(chunk));
 
-      let renderError: unknown;
+    const completed = finished(stream);
+    const fail = (error: unknown) => {
+      stream.destroy(error instanceof Error ? error : new Error(String(error)));
+    };
 
-      let timeout: ReturnType<typeof setTimeout> | undefined;
-
-      const { pipe, abort } = renderToPipeableStream(
-        <StaticRouter location={url}>
-          <App queryClient={queryClient} dehydratedState={dehydratedState} />
-        </StaticRouter>,
-        {
-          onAllReady() {
-            if (renderError) {
-              reject(renderError);
-              return;
-            }
-
-            const stream = new PassThrough();
-
-            stream.on('data', (chunk: Buffer) => {
-              chunks.push(chunk);
-            });
-
-            stream.on('error', reject);
-
-            stream.on('end', () => {
-              resolve(Buffer.concat(chunks).toString('utf8'));
-            });
-
-            pipe(stream);
-          },
-
-          onError(error) {
-            renderError = error;
-          },
+    let renderError: unknown;
+    const { pipe, abort } = renderToPipeableStream(
+      <StaticRouter location={url}>
+        <App queryClient={queryClient} dehydratedState={dehydratedState} />
+      </StaticRouter>,
+      {
+        onAllReady() {
+          if (renderError) {
+            fail(renderError);
+            return;
+          }
+          pipe(stream);
         },
-      );
 
-      timeout = setTimeout(() => {
-        abort();
-        reject(new Error('SSR rendering timeout'));
-      }, 10_000);
+        onShellError: fail,
 
-      timeout.unref();
+        onError(error) {
+          renderError = error;
+        },
+      },
+    );
 
-      // Очищаем таймер после завершения рендеринга.
-      // finally выполняется и при ошибке.
-    }).finally(() => {
-      // Очистку таймера вынесем ниже в окончательном варианте.
-    });
+    const timeout = setTimeout(() => {
+      fail(new Error('SSR rendering timeout'));
+      abort();
+    }, 10_000);
+    timeout.unref();
+
+    try {
+      await completed;
+    } finally {
+      clearTimeout(timeout);
+    }
 
     return {
-      markup,
+      markup: Buffer.concat(chunks).toString('utf8'),
       dehydratedState,
     };
   } finally {

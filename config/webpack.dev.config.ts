@@ -1,15 +1,8 @@
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
-
-import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
 import type { BuildOptions } from './types';
 
-export const devConfig = ({
-  paths,
-  port,
-  mode = 'development',
-}: BuildOptions): webpack.Configuration => {
+export const devConfig = ({ paths, mode = 'development' }: BuildOptions): webpack.Configuration => {
   return {
     name: 'client-development',
 
@@ -35,25 +28,7 @@ export const devConfig = ({
 
     devtool: 'eval-cheap-module-source-map',
 
-    devServer: {
-      open: true,
-
-      historyApiFallback: true,
-
-      hot: true,
-
-      port: port ?? 3000,
-    } as DevServerConfiguration,
-
     plugins: [
-      new HtmlWebpackPlugin({
-        template: paths.html,
-
-        filename: 'index.html',
-
-        inject: 'head',
-      }),
-
       new webpack.ManifestPlugin({
         filename: 'manifest.json',
 

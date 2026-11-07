@@ -1,18 +1,14 @@
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import { AppAllRoutes } from './AppAllRoutes';
+import { routeDefinitions } from './routeDefinitions';
 
-export const AppRoutes = () => {
-  return (
+export const AppRoutes = () => (
+  <Suspense fallback={<div>Loading...</div>}>
     <Routes>
-      {AppAllRoutes.map(route => (
-        <Route
-          key={route.path}
-          path={route.path}
-          element={<Suspense fallback={<div>Loading...</div>}>{route.components}</Suspense>}
-        />
+      {routeDefinitions.map(({ path, Component }) => (
+        <Route key={path} path={path} element={<Component />} />
       ))}
     </Routes>
-  );
-};
+  </Suspense>
+);

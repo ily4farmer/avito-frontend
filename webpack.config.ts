@@ -30,9 +30,8 @@ export default (env: WebpackEnvironment, argv: WebpackArguments): Configuration 
 
   // Клиентская production-сборка.
   const clientPaths = {
-    entry: path.resolve(__dirname, 'src/index.tsx'),
+    entry: path.resolve(__dirname, 'src/client.tsx'),
     build: path.resolve(__dirname, 'dist/client'),
-    html: path.resolve(__dirname, 'index.html'),
   };
 
   // Клиентская development-сборка.
@@ -59,7 +58,6 @@ export default (env: WebpackEnvironment, argv: WebpackArguments): Configuration 
       development: () =>
         devConfig({
           paths: clientDevPaths,
-          port: 3000,
           mode: 'development',
         }),
 

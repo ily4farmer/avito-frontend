@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { DemoPost } from '../../components/DemoPost/DemoPost';
-import { useMainStore } from '../../store';
+import { useMainStore } from '../../store/main/main';
 
 export const Main = () => {
   const { count, setCount } = useMainStore();

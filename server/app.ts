@@ -1,4 +1,3 @@
-import path from 'node:path';
 import type { ErrorRequestHandler } from 'express';
 import express from 'express';
 
@@ -27,7 +26,7 @@ app.get('/{*splat}', async (request, response) => {
   const pathname = request.path;
 
   // Отсутствующие статические ресурсы не должны запускать SSR.
-  if (path.extname(pathname)) {
+  if (/^\/(?:js|css|assets)\//.test(pathname) || pathname === '/manifest.json') {
     response.status(404).send('Not Found');
     return;
   }
@@ -35,7 +34,7 @@ app.get('/{*splat}', async (request, response) => {
   // Определяем маршрут React-приложения.
   const matches = matchRoutes(routeDefinitions, pathname);
 
-  const statusCode = matches ? 200 : 404;
+  const statusCode = !matches || matches.at(-1)?.route.path === '*' ? 404 : 200;
 
   // Выполняем React SSR.
   const { markup, dehydratedState } = await renderPage(pathname);

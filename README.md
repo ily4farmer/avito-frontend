@@ -1,53 +1,60 @@
-# 🚀 Welcome to your new awesome project!
+# React SSR Boilerplate
 
-This project has been created using **create-webpack-app**, you can now run
+React 19, React Router 7, TanStack Query, Zustand, Webpack 5, SWC and Express 5.
+The server renders HTML; the browser hydrates the existing markup.
 
-```bash
-npm run build
+## Requirements
+
+- Node.js 22+
+- pnpm 12
+
+## Development
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-or
+Open http://localhost:3000. `pnpm dev` watches both client and server bundles
+and restarts the Express process after server changes. Refresh the browser
+manually after client changes; this setup deliberately does not enable HMR.
 
-```bash
-yarn build
+## Production
+
+```sh
+pnpm build
+pnpm start
 ```
 
-to bundle your application
+The client bundle is written to `dist/client`, and the server bundle to
+`dist/server`. Express reads the client asset manifest and injects the current
+JS and CSS filenames into SSR HTML. Use the `PORT` environment variable to
+change the listening port (default: 3000).
 
-## HTML and CSS
+## Checks
 
-`index.html` is the entry point of this project — webpack bundles every script and
-stylesheet the page references and emits the page as `dist/index.html`, with the
-references rewritten to the generated assets. Both are supported out of the box, so
-no loader or plugin is needed for `.html` and `.css` files.
-
-Sass, Less, Stylus and PostCSS keep that support and only add their own loader on
-top of it, as a `css/auto` rule:
-
-```js
-{
-    test: /\.s[ac]ss$/i,
-    type: "css/auto",
-    use: ["sass-loader"],
-}
+```sh
+pnpm typecheck
+pnpm lint
+pnpm test
 ```
 
-They combine, too: webpack applies `use` right to left, so `["postcss-loader",
-"sass-loader"]` compiles the Sass first and runs PostCSS over the result.
+`pnpm test` builds the project and runs an HTTP smoke test for the SSR server.
+It does not replace browser-level hydration tests.
 
-## TypeScript
+## Docker
 
-This project compiles TypeScript with `ts-loader`, which type
-checks as it builds and handles every TypeScript feature, `.tsx` included.
-
-webpack can also strip the types itself, with no loader at all — it is faster, but it
-covers erasable syntax only (types, generics, `import type`, casts) and checks nothing.
-Re-run `create-webpack-app` and answer `built-in` to that question to try it.
-
-Either way, `tsconfig.json` is what your editor reads, and:
-
-```bash
-npm run check:types
+```sh
+docker build -t react-ssr-boilerplate .
+docker run --rm -p 3000:3000 react-ssr-boilerplate
 ```
 
-runs `tsc --noEmit` over the project.
+## Adding routes
+
+Add a lazy component and a route in `src/app/AppRoutes/routeDefinitions.ts`.
+The same route list is used for browser rendering, server HTTP statuses and
+optional server data preloading. Route preloads can propagate critical errors
+or handle optional errors locally.
+
+The example on `/` fetches a public demo post. Replace it with your own data
+source when starting a real application.

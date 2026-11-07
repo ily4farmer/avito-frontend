@@ -1,8 +1,9 @@
 import type { DehydratedState } from '@tanstack/react-query';
-import { createRoot, hydrateRoot } from 'react-dom/client';
+import { hydrateRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
 import { App } from './app/App';
+import './styles.css';
 
 const rootElement = document.getElementById('root');
 
@@ -23,8 +24,4 @@ const app = (
   </BrowserRouter>
 );
 
-if (rootElement.hasChildNodes()) {
-  hydrateRoot(rootElement, app);
-} else {
-  createRoot(rootElement).render(app);
-}
+hydrateRoot(rootElement, app);

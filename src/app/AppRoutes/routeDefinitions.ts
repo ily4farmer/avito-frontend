@@ -1,26 +1,34 @@
 import type { QueryClient } from '@tanstack/react-query';
+import { type ComponentType, lazy } from 'react';
 
-import { RouteId, RouteUrl } from '../../constants/routes';
 import { demoPostQueryOptions } from '../../services/demoPost';
 
+const Main = lazy(() => import('../../pages/Main/Main').then(({ Main }) => ({ default: Main })));
+const About = lazy(() =>
+  import('../../pages/About/About').then(({ About }) => ({ default: About })),
+);
+const NotFound = lazy(() =>
+  import('../../pages/NotFound/NotFound').then(({ NotFound }) => ({ default: NotFound })),
+);
+
 export type RouteDefinition = {
-  id: RouteId;
   path: string;
+  Component: ComponentType;
   preload?: (queryClient: QueryClient) => Promise<unknown>;
 };
 
 export const routeDefinitions: RouteDefinition[] = [
   {
-    id: RouteId.main,
-    path: RouteUrl.main,
-    preload: queryClient => queryClient.query(demoPostQueryOptions),
+    path: '/',
+    Component: Main,
+    preload: queryClient => queryClient.query(demoPostQueryOptions).catch(() => undefined),
   },
   {
-    id: RouteId.about,
-    path: RouteUrl.about,
+    path: '/about',
+    Component: About,
   },
   {
-    id: RouteId.notFound,
-    path: RouteUrl.notFound,
+    path: '*',
+    Component: NotFound,
   },
 ];

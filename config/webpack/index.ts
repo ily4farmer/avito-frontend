@@ -1,3 +1,3 @@
+export * from './dev.config';
+export * from './prod.config';
 export * from './types';
-export * from './webpack.dev.config';
-export * from './webpack.prod.config';

@@ -1,37 +1,36 @@
-import CompressionPlugin from 'compression-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import type webpack from 'webpack';
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
 import type { BuildOptions } from './types';
 
-export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpack.Configuration => {
+export const devConfig = ({
+  paths,
+  port,
+  mode = 'development',
+}: BuildOptions): webpack.Configuration => {
   return {
     mode: mode,
-    target: 'web',
-    devtool: 'source-map',
     entry: { app: paths.entry },
     output: {
       path: paths.build,
-      filename: 'js/[name].[contenthash:8].js',
-      chunkFilename: 'js/[name].[contenthash:8].js',
+      filename: '[name].js',
+      chunkFilename: '[name].js',
       clean: true,
     },
+    devServer: {
+      open: true,
+      historyApiFallback: true,
+      hot: true,
+      port: port || 3000,
+    } as DevServerConfiguration,
+    devtool: 'eval-cheap-module-source-map',
     plugins: [
       new HtmlWebpackPlugin({
-        minify: {
-          collapseWhitespace: true,
-          removeComments: true,
-        },
         template: paths.html,
         filename: 'index.html',
         inject: 'head',
       }),
-      new MiniCssExtractPlugin({
-        chunkFilename: 'css/[name].[contenthash:8].css',
-        filename: 'css/[name].[contenthash:8].css',
-      }),
-      new CompressionPlugin({ algorithm: 'gzip' }),
     ],
     module: {
       rules: [
@@ -49,7 +48,7 @@ export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpac
                 transform: {
                   react: {
                     runtime: 'automatic',
-                    development: false,
+                    development: true,
                   },
                 },
                 target: 'es2022',
@@ -63,7 +62,18 @@ export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpac
         },
         {
           test: /\.css$/i,
-          use: [MiniCssExtractPlugin.loader, 'css-loader'],
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  auto: true,
+                  namedExport: false,
+                },
+              },
+            },
+          ],
         },
       ],
     },

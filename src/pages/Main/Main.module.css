@@ -1,0 +1,15 @@
+.mainContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainCount {
+  display: flex;
+  gap: 10px;
+}
+
+.mainLinkList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}

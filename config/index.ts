@@ -1,2 +1,1 @@
-export * from './webpack.dev.config';
-export * from './webpack.prod.config';
+export * from './webpack';

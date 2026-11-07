@@ -4,7 +4,9 @@ export const RouteId = {
   notFound: 'notFound',
 } as const;
 
-export const RouteUrl: Record<string, string> = {
+export type RouteIdKeys = keyof typeof RouteId;
+
+export const RouteUrl: Record<RouteIdKeys, string> = {
   [RouteId.main]: '/',
   [RouteId.about]: '/about',
   [RouteId.notFound]: '/not-found',

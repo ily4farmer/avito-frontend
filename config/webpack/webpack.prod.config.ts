@@ -1,36 +1,37 @@
+import CompressionPlugin from 'compression-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import type webpack from 'webpack';
-import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
 import type { BuildOptions } from './types';
 
-export const devConfig = ({
-  paths,
-  port,
-  mode = 'development',
-}: BuildOptions): webpack.Configuration => {
+export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpack.Configuration => {
   return {
     mode: mode,
+    target: 'web',
+    devtool: 'source-map',
     entry: { app: paths.entry },
     output: {
       path: paths.build,
-      filename: '[name].js',
-      chunkFilename: '[name].js',
+      filename: 'js/[name].[contenthash:8].js',
+      chunkFilename: 'js/[name].[contenthash:8].js',
       clean: true,
     },
-    devServer: {
-      open: true,
-      historyApiFallback: true,
-      hot: true,
-      port: port || 3000,
-    } as DevServerConfiguration,
-    devtool: 'eval-cheap-module-source-map',
     plugins: [
       new HtmlWebpackPlugin({
+        minify: {
+          collapseWhitespace: true,
+          removeComments: true,
+        },
         template: paths.html,
         filename: 'index.html',
         inject: 'head',
       }),
+      new MiniCssExtractPlugin({
+        chunkFilename: 'css/[name].[contenthash:8].css',
+        filename: 'css/[name].[contenthash:8].css',
+      }),
+      new CompressionPlugin({ algorithm: 'gzip' }),
     ],
     module: {
       rules: [
@@ -48,7 +49,7 @@ export const devConfig = ({
                 transform: {
                   react: {
                     runtime: 'automatic',
-                    development: true,
+                    development: false,
                   },
                 },
                 target: 'es2022',
@@ -62,12 +63,8 @@ export const devConfig = ({
         },
         {
           test: /\.css$/i,
-          use: ['style-loader', 'css-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
-
-        // HTML, CSS need no loader — webpack supports them out of the box
-        // Add your rules for custom modules here
-        // Learn more about loaders from https://webpack.js.org/loaders/
       ],
     },
     resolve: {

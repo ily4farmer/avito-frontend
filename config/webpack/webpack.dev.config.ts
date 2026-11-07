@@ -1,15 +1,16 @@
-import CompressionPlugin from 'compression-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import webpack from 'webpack';
+import type webpack from 'webpack';
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
 import type { BuildOptions } from './types';
 
-export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpack.Configuration => {
+export const devConfig = ({
+  paths,
+  port,
+  mode = 'development',
+}: BuildOptions): webpack.Configuration => {
   return {
     mode: mode,
-    target: 'web',
-    devtool: 'source-map',
     entry: { app: paths.entry },
     output: {
       path: paths.build,
@@ -17,21 +18,18 @@ export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpac
       chunkFilename: '[name].js',
       clean: true,
     },
+    devServer: {
+      open: true,
+      historyApiFallback: true,
+      hot: true,
+      port: port || 3000,
+    } as DevServerConfiguration,
+    devtool: 'eval-cheap-module-source-map',
     plugins: [
       new HtmlWebpackPlugin({
-        minify: {
-          collapseWhitespace: true,
-          removeComments: true,
-        },
         template: paths.html,
         filename: 'index.html',
         inject: 'head',
-      }),
-      new webpack.ProgressPlugin(),
-      new CompressionPlugin({ algorithm: 'gzip' }),
-      new MiniCssExtractPlugin({
-        chunkFilename: 'css/[name].[contenthash:8].css',
-        filename: 'css/[name].[contenthash:8].css',
       }),
     ],
     module: {
@@ -64,12 +62,8 @@ export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpac
         },
         {
           test: /\.css$/i,
-          use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader'],
+          use: ['style-loader', 'css-loader'],
         },
-
-        // HTML, CSS need no loader — webpack supports them out of the box
-        // Add your rules for custom modules here
-        // Learn more about loaders from https://webpack.js.org/loaders/
       ],
     },
     resolve: {

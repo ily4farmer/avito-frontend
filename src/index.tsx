@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter/wght.css';
 import './styles.css';
 
 import { createRoot } from 'react-dom/client';

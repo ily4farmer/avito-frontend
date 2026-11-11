@@ -14,12 +14,6 @@ const About = lazy(() =>
   })),
 );
 
-const ToDo = lazy(() =>
-  import('../../pages/Todo/Todo').then(module => ({
-    default: module.Todo,
-  })),
-);
-
 const NotFound = lazy(() =>
   import('../../pages/NotFound/NotFound').then(module => ({
     default: module.NotFound,
@@ -34,10 +28,6 @@ export const AppAllRoutes: AppRoutesConfig = [
   {
     components: <About />,
     path: RouteUrl[RouteId.about],
-  },
-  {
-    components: <ToDo />,
-    path: RouteUrl[RouteId.todo],
   },
   {
     components: <NotFound />,

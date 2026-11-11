@@ -1,3 +1,4 @@
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import type webpack from 'webpack';
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
@@ -31,6 +32,7 @@ export const devConfig = ({
         filename: 'index.html',
         inject: 'head',
       }),
+      new ReactRefreshWebpackPlugin(),
     ],
     module: {
       rules: [
@@ -49,6 +51,7 @@ export const devConfig = ({
                   react: {
                     runtime: 'automatic',
                     development: true,
+                    refresh: true,
                   },
                 },
                 target: 'es2022',

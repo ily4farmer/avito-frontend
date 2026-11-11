@@ -1,6 +1,7 @@
 import CompressionPlugin from 'compression-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import MinimizerPlugin from 'minimizer-webpack-plugin';
 import type webpack from 'webpack';
 
 import type { BuildOptions } from './types';
@@ -33,6 +34,21 @@ export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpac
       }),
       new CompressionPlugin({ algorithm: 'gzip' }),
     ],
+    optimization: {
+      minimize: true,
+      minimizer: [
+        '...',
+        new MinimizerPlugin({
+          test: /\.css(\?.*)?$/i,
+          minify: {
+            implementation: MinimizerPlugin.cssnanoMinify,
+            options: {
+              preset: 'default',
+            },
+          },
+        }),
+      ],
+    },
     module: {
       rules: [
         {

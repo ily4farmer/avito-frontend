@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { baseQuery } from '../baseQuery';
 
-export const AboutGetList = () => {
+export const useAboutGetList = () => {
   return useQuery({
     queryKey: ['about'],
     queryFn: () =>

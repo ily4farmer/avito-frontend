@@ -15,7 +15,7 @@ const colors = {
   borderSoft: '#E2E8F0',
 } as const;
 
-export const nordicSlateTheme: ThemeConfig = {
+export const AppStyles: ThemeConfig = {
   token: {
     colorPrimary: colors.primary,
     colorPrimaryBg: colors.primarySoft,

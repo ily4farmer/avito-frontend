@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { AboutGetList } from '../../api/about/about.query';
+import { useAboutGetList } from '../../api/about/about.query';
 
 export const About = () => {
-  const { data, isError, isFetched, error } = AboutGetList();
+  const { data, isError, isFetched, error } = useAboutGetList();
 
   console.log({ data, isError, isFetched, error });
 

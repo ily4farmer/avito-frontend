@@ -95,7 +95,7 @@ export const prodConfig = ({ paths, mode = 'production' }: BuildOptions): webpac
       ],
     },
     resolve: {
-      extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
+      extensions: ['.tsx', '.ts', '.jsx', '.js'],
     },
   };
 };

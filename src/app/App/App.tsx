@@ -1,13 +1,10 @@
-import { AppAntdProvider } from '../AppAntdProvider';
-import { AppQueryClient } from '../AppQueryClient';
+import { AppProviders } from '../AppProviders';
 import { AppRoutes } from '../AppRoutes/AppRoutes';
 
 export const App = () => {
   return (
-    <AppQueryClient>
-      <AppAntdProvider>
-        <AppRoutes />
-      </AppAntdProvider>
-    </AppQueryClient>
+    <AppProviders>
+      <AppRoutes />
+    </AppProviders>
   );
 };
